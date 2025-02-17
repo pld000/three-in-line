@@ -3,16 +3,16 @@ import { GAME_BOARD_SIZE } from './constants';
 
 export class Bonus {
   extendCombinations(combinations: Combination[]): Combination[] {
-    return combinations.map(comb => {
-      if (comb.cellIds.length > 4) {
-        comb.bonus = true;
-        if (comb.type === 'row') {
-          comb.cellIds = Array.from({ length: GAME_BOARD_SIZE }, (_, i) => i);
-        } else {
-          comb.cellIds = Array.from({ length: GAME_BOARD_SIZE }, (_, i) => i);
-        }
+
+    return combinations.map(comb => comb.cellIds.length > 3
+      ? {
+        ...comb,
+        bonus: true,
+        cellIds: comb.type === 'row'
+          ? Array.from({ length: GAME_BOARD_SIZE }, (_, i) => i)
+          : Array.from({ length: GAME_BOARD_SIZE }, (_, i) => i)
       }
-      return comb;
-    });
+      : comb
+    );
   }
 }
