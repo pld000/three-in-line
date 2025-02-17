@@ -1,25 +1,19 @@
 import { Cell } from './cell';
+import { CELL_SIZE, GAME_BOARD_SIZE } from './constants';
 
 export class GameBoard {
-  draw(state: Cell[][]): void {
+  draw(state: Cell[][], onCellClick: (cell: Cell) => void): void {
     const board = document.createElement('div');
     board.style.margin = '100px auto';
-
-    // Set the grid dimensions based on the state array
-    board.style.gridTemplateColumns = `repeat(${state[0].length}, 30px)`;
+    board.style.display = 'grid';
+    board.style.justifyContent = 'center';
+    board.style.height = '100%';
+    board.style.gridTemplateColumns = `repeat(${GAME_BOARD_SIZE}, ${CELL_SIZE}px)`;
 
     // Create cells
-    state.forEach(row => {
+    state.forEach((row) => {
       row.forEach(cell => {
-        const cellElement = document.createElement('div');
-        cellElement.style.height = '30px';
-        cellElement.style.border = '1px solid black';
-        cellElement.style.display = 'flex';
-        cellElement.style.alignItems = 'center';
-        cellElement.style.justifyContent = 'center';
-        cellElement.style.fontSize = '20px';
-        cellElement.style.fontWeight = 'bold';
-        board.appendChild(cellElement);
+        board.appendChild(cell.createCell(onCellClick));
       });
     });
 

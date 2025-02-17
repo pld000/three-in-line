@@ -1,21 +1,25 @@
-export class Cell {
-  neighbors: number[] = [];
-  position: number[] = [];
+import { CELL_SIZE, FONT_SIZE } from './constants';
 
-  constructor(public id: number, public value: string) {
+export class Cell {
+  public element!: HTMLElement;
+  constructor(public index: number, public row: number, public value: string) {
   }
 
-  createCell(): HTMLElement {
-    const cellElement = document.createElement('div');
-    cellElement.style.height = '30px';
-    cellElement.style.border = '1px solid black';
-    cellElement.style.display = 'flex';
-    cellElement.style.alignItems = 'center';
-    cellElement.style.justifyContent = 'center';
-    cellElement.style.fontSize = '20px';
-    cellElement.style.fontWeight = 'bold';
+  createCell(onClick: (cell: Cell) => void): HTMLElement {
+    this.element = document.createElement('div');
+    this.element.style.height = `${CELL_SIZE}px`;
+    this.element.style.border = '1px solid black';
+    this.element.style.display = 'flex';
+    this.element.style.alignItems = 'center';
+    this.element.style.justifyContent = 'center';
+    this.element.style.fontSize = `${FONT_SIZE}px`;
+    this.element.style.fontWeight = 'bold';
+    this.element.style.cursor = 'pointer';
+    this.element.innerHTML = this.value;
 
-    return cellElement;
+    this.element.addEventListener('click', () => onClick(this));
+
+    return this.element;
   }
 
 
