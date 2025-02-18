@@ -1,58 +1,87 @@
 import { Cell } from './cell';
 import { Combination } from '../interfaces/index';
-import { GAME_BOARD_SIZE } from './constants';
+import { BONUS_ACTIVATION_COUNT, GAME_BOARD_SIZE } from './constants';
 
 export class GameState {
   getInitialState(): Cell[][] {
-    return Array.from({ length: GAME_BOARD_SIZE }, (_, row) =>
-      Array.from({ length: GAME_BOARD_SIZE }, (_, index) => new Cell(index, row, this.randomValue()))
+    const state: Cell[][] = Array.from({ length: GAME_BOARD_SIZE }, (_, row) =>
+      Array.from({ length: GAME_BOARD_SIZE }, (_, index) => new Cell(index, row, ''))
     );
+
+    for (let row = 0; row < GAME_BOARD_SIZE; row++) {
+      for (let col = 0; col < GAME_BOARD_SIZE; col++) {
+        let value;
+        do {
+          value = this.randomValue();
+        } while (
+          (col >= 2 && state[row][col - 1].value === value && state[row][col - 2].value === value) ||
+          (row >= 2 && state[row - 1][col].value === value && state[row - 2][col].value === value)
+          );
+        state[row][col].value = value;
+      }
+    }
+
+    return state;
   }
 
   isTransitionValid(a: Cell, b: Cell): boolean {
     const rowDiff = Math.abs(a.row - b.row);
     const colDiff = Math.abs(a.index - b.index);
-    return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+    return a.value !== b.value && (rowDiff === 1 && colDiff === 0 || rowDiff === 0 && colDiff === 1);
   }
 
-  getCombinations(state: Cell[][], { row, index, value }: {
-    row: number,
-    index: number,
-    value: string
-  }): Combination[] {
+  getCombinations(state: Cell[][], cells: Cell[]): Combination[] {
     const combinations: Combination[] = [];
 
-    const rowCells = state[row];
-    let rowMatches = [index];
-    for (let i = index - 1; i >= 0 && rowCells[i].value === value; i--) {
-      rowMatches.unshift(i);
-    }
-    for (let i = index + 1; i < GAME_BOARD_SIZE && rowCells[i].value === value; i++) {
-      rowMatches.push(i);
-    }
-    if (rowMatches.length >= 3) {
-      combinations.push({ id: row, type: 'row', cellIds: rowMatches, bonus: rowMatches.length > 4 });
-    }
+    cells.forEach(({ row, index, value }) => {
+      const rowCells = state[row];
+      let rowMatches = [index];
+      for (let i = index - 1; i >= 0 && rowCells[i].value === value; i--) {
+        rowMatches.unshift(i);
+      }
+      for (let i = index + 1; i < GAME_BOARD_SIZE && rowCells[i].value === value; i++) {
+        rowMatches.push(i);
+      }
+      if (rowMatches.length >= 3) {
+        combinations
+          .push({ id: row, type: 'row', cellIds: rowMatches, bonus: rowMatches.length > BONUS_ACTIVATION_COUNT });
+      }
 
-    let colMatches = [row];
-    for (let i = row - 1; i >= 0 && state[i][index].value === value; i--) {
-      colMatches.unshift(i);
-    }
-    for (let i = row + 1; i < GAME_BOARD_SIZE && state[i][index].value === value; i++) {
-      colMatches.push(i);
-    }
-    if (colMatches.length >= 3) {
-      combinations.push({ id: index, type: 'column', cellIds: colMatches, bonus: colMatches.length > 4 });
-    }
+      let colMatches = [row];
+      for (let i = row - 1; i >= 0 && state[i][index].value === value; i--) {
+        colMatches.unshift(i);
+      }
+      for (let i = row + 1; i < GAME_BOARD_SIZE && state[i][index].value === value; i++) {
+        colMatches.push(i);
+      }
+      if (colMatches.length >= 3) {
+        combinations
+          .push({ id: index, type: 'column', cellIds: colMatches, bonus: colMatches.length > BONUS_ACTIVATION_COUNT });
+      }
+    });
 
     return combinations;
   }
 
   updateState(state: Cell[][], combinations: Combination[]): Cell[][] {
     combinations.forEach(({ id, type, cellIds, bonus }) => {
-      if (bonus && type === 'column') {
-        for (let row = 0; row < GAME_BOARD_SIZE; row++) {
-          state[row][id].value = this.randomValue();
+      if (bonus) {
+        if (type === 'column') {
+          for (let row = 0; row < GAME_BOARD_SIZE; row++) {
+            state[row][id].value = this.randomValue();
+          }
+        }
+
+        if (type === 'row') {
+          for (let row = id; row > 0; row--) {
+            for (let i = 0; i < GAME_BOARD_SIZE; i++) {
+              state[row][i].value = state[row - 1][i].value;
+            }
+          }
+
+          for (let i = 0; i < GAME_BOARD_SIZE; i++) {
+            state[0][i].value = this.randomValue();
+          }
         }
       } else {
         cellIds.forEach((cellIndex) => {
@@ -61,7 +90,9 @@ export class GameState {
               state[id][r].value = state[id][r - 1].value;
             }
             state[id][0].value = this.randomValue();
-          } else {
+          }
+
+          if (type === 'column') {
             for (let r = cellIndex; r > 0; r--) {
               state[r][id].value = state[r - 1][id].value;
             }

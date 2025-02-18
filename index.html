@@ -34,10 +34,18 @@
           grid-area: score-statistic;
           overflow-y: auto;
           min-width: 260px;
-          max-height: 535px;
+          max-height: 500px;
+          position: relative;
+          padding-top: 35px;
       }
 
-      score-statistic div + div{
+      score-statistic div:first-child {
+          position: absolute;
+          left: 0;
+          top: 0;
+      }
+
+      score-statistic div + div {
           margin-top: 10px;
       }
 

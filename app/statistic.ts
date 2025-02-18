@@ -3,6 +3,7 @@ import { Combination, LogInfo } from '../interfaces/index';
 export class Statistic {
   public totalScore = 0;
   private logs: LogInfo[] = [];
+  private title = `<div style="font-size: 30px; font-weight: bold">Statistics:<div>`;
 
   init() {
     this.createScoreLabel();
@@ -19,7 +20,7 @@ export class Statistic {
   private mapCombinationToLogInfo({ id, type, bonus, score }: Combination): LogInfo {
     return <LogInfo>{
       move: `Move: ${type} - ${id}`,
-      bonus: bonus ? `<span style="color: red">Bonus Move!!!</span>` : '',
+      bonus: bonus ? `<span style="color: red">Bonus</span>` : '',
       score
     };
   }
@@ -36,7 +37,7 @@ export class Statistic {
   createScoreStatistic(): void {
     const scoreStatistic = document.createElement('score-statistic');
     scoreStatistic.style.display = 'block';
-    scoreStatistic.innerHTML = `<div style="font-size: 30px; font-weight: bold">Statistics:<div>`;
+    scoreStatistic.innerHTML = this.title;
     document.querySelector('container')!.appendChild(scoreStatistic);
   }
 
@@ -51,9 +52,9 @@ export class Statistic {
     }
 
     const scoreStatistic = document.querySelector('score-statistic');
-    scoreStatistic!.innerHTML = `<div style="font-size: 30px; font-weight: bold">Statistics:<div>`;
+    scoreStatistic!.innerHTML = this.title;
 
-    this.logs.forEach(({move, bonus, score}) => {
+    this.logs.forEach(({ move, bonus, score }) => {
       const statisticLine = document.createElement('div');
       statisticLine.style.whiteSpace = 'nowrap';
       statisticLine.innerHTML = `${move}${(bonus ? ' - ' + bonus : '')} - ${score}`;

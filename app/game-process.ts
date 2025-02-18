@@ -16,9 +16,9 @@ export class GameProcess {
   private statistic = new Statistic();
 
   startGame(): void {
-    this.statistic.init();
     this.state = this.gameState.getInitialState();
     this.gameBoard.draw(this.state, this.handleCellClick.bind(this));
+    this.statistic.init();
   }
 
   handleCellClick(cell: Cell): void {
@@ -28,7 +28,8 @@ export class GameProcess {
     }
 
     this.gameState.changeCells(this.selectedCell, cell);
-    let combinations = this.gameState.getCombinations(this.state, cell);
+    let combinations = this.gameState
+      .getCombinations(this.state, [this.selectedCell, cell]);
 
     combinations = this.bonus.extendCombinations(combinations);
     combinations = this.score.extendCombinations(combinations);

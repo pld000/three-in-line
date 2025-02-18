@@ -8,6 +8,7 @@ export class Cell {
   createCell(onClick: (cell: Cell) => void): HTMLElement {
     this.element = document.createElement('div');
     this.element.style.height = `${CELL_SIZE}px`;
+    this.element.style.width = `100%`;
     this.element.style.border = '1px solid black';
     this.element.style.display = 'flex';
     this.element.style.alignItems = 'center';
