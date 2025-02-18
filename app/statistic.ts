@@ -30,18 +30,35 @@ export class Statistic {
     scoreLabel.style.fontSize = `40px`;
     scoreLabel.style.fontWeight = 'bold';
     scoreLabel.innerHTML = `Score: ${this.totalScore}`;
-    document.body.appendChild(scoreLabel);
+    document.querySelector('container')!.appendChild(scoreLabel);
   }
 
   createScoreStatistic(): void {
     const scoreStatistic = document.createElement('score-statistic');
     scoreStatistic.style.display = 'block';
     scoreStatistic.innerHTML = `<div style="font-size: 30px; font-weight: bold">Statistics:<div>`;
-    document.body.appendChild(scoreStatistic);
+    document.querySelector('container')!.appendChild(scoreStatistic);
   }
 
   updateScore(): void {
     const scoreLabel = document.querySelector('score-label');
     scoreLabel!.innerHTML = `Score: ${this.totalScore}`;
+  }
+
+  updateScoreStatistic(): void {
+    if (this.logs.length === 0) {
+      return;
+    }
+
+    const scoreStatistic = document.querySelector('score-statistic');
+    scoreStatistic!.innerHTML = `<div style="font-size: 30px; font-weight: bold">Statistics:<div>`;
+
+    this.logs.forEach(({move, bonus, score}) => {
+      const statisticLine = document.createElement('div');
+      statisticLine.style.whiteSpace = 'nowrap';
+      statisticLine.innerHTML = `${move}${(bonus ? ' - ' + bonus : '')} - ${score}`;
+
+      scoreStatistic!.appendChild(statisticLine);
+    });
   }
 }

@@ -4,10 +4,7 @@ import { CELL_SIZE, GAME_BOARD_SIZE } from './constants';
 export class GameBoard {
   draw(state: Cell[][], onCellClick: (cell: Cell) => void): void {
     const board = document.createElement('game-board');
-    board.style.margin = '100px auto';
     board.style.display = 'grid';
-    board.style.justifyContent = 'center';
-    board.style.height = '100%';
     board.style.gridTemplateColumns = `repeat(${GAME_BOARD_SIZE}, ${CELL_SIZE}px)`;
 
     state.forEach((row) => {
@@ -21,6 +18,6 @@ export class GameBoard {
       existingBoard.remove();
     }
 
-    document.body.appendChild(board);
+    document.querySelector('container')!.appendChild(board);
   }
 }

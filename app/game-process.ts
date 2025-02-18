@@ -35,6 +35,7 @@ export class GameProcess {
     combinations = this.score.extendCombinations(combinations);
     this.statistic.write(combinations);
     this.statistic.updateScore();
+    this.statistic.updateScoreStatistic();
     this.state = this.gameState.updateState(this.state, combinations);
     this.gameBoard.draw(this.state, this.handleCellClick.bind(this));
 

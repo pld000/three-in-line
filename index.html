@@ -7,6 +7,37 @@
   <style>
       body {
           background: #f1f1f1;
+          display: flex;
+          justify-content: center;
+          padding-top: 50px;
+      }
+
+      container {
+          display: grid;
+          grid-template-areas: "score-label score-label" "game-board score-statistic";
+          grid-template-columns: 2fr 1fr;
+          grid-template-rows: auto 1fr;
+          grid-column-gap: 30px;
+          grid-row-gap: 10px;
+      }
+
+      score-label {
+          grid-area: score-label;
+      }
+
+      game-board {
+          grid-area: game-board;
+      }
+
+      score-statistic {
+          grid-area: score-statistic;
+          overflow-y: auto;
+          min-width: 260px;
+          max-height: 535px;
+      }
+
+      score-statistic div + div{
+          margin-top: 10px;
       }
 
       game-board [cell-value='A'] {
@@ -31,7 +62,7 @@
   </style>
 </head>
 <body>
-
+<container></container>
 </body>
 
 <script src="./index.js"></script>
