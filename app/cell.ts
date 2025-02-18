@@ -16,11 +16,10 @@ export class Cell {
     this.element.style.fontWeight = 'bold';
     this.element.style.cursor = 'pointer';
     this.element.innerHTML = this.value;
+    this.element.setAttribute('cell-value', this.value);
 
     this.element.addEventListener('click', () => onClick(this));
 
     return this.element;
   }
-
-
 }

@@ -15,7 +15,11 @@ export class GameState {
     return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
   }
 
-  getCombinations(state: Cell[][], { row, index, value }: { row: number, index: number, value: string }): Combination[] {
+  getCombinations(state: Cell[][], { row, index, value }: {
+    row: number,
+    index: number,
+    value: string
+  }): Combination[] {
     const combinations: Combination[] = [];
 
     const rowCells = state[row];
@@ -44,7 +48,29 @@ export class GameState {
     return combinations;
   }
 
-  getNormalizedState(state: Cell[][]): Cell[][] {
+  updateState(state: Cell[][], combinations: Combination[]): Cell[][] {
+    combinations.forEach(({ id, type, cellIds, bonus }) => {
+      if (bonus && type === 'column') {
+        for (let row = 0; row < GAME_BOARD_SIZE; row++) {
+          state[row][id].value = this.randomValue();
+        }
+      } else {
+        cellIds.forEach((cellIndex) => {
+          if (type === 'row') {
+            for (let r = cellIndex; r > 0; r--) {
+              state[id][r].value = state[id][r - 1].value;
+            }
+            state[id][0].value = this.randomValue();
+          } else {
+            for (let r = cellIndex; r > 0; r--) {
+              state[r][id].value = state[r - 1][id].value;
+            }
+            state[0][id].value = this.randomValue();
+          }
+        });
+      }
+    });
+
     return state;
   }
 
@@ -55,6 +81,9 @@ export class GameState {
 
     a.element.innerHTML = a.value;
     b.element.innerHTML = b.value;
+
+    a.element.setAttribute('cell-value', a.value);
+    b.element.setAttribute('cell-value', b.value);
   }
 
   private randomValue(): string {
