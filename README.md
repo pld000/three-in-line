@@ -6,3 +6,5 @@
 
 Окружение:
 nodejs version >= 20
+
+![img.png](img.png)
