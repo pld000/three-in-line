@@ -65,40 +65,33 @@ export class GameState {
 
   updateState(state: Cell[][], combinations: Combination[]): Cell[][] {
     combinations.forEach(({ id, type, cellIds, bonus }) => {
-      if (bonus) {
-        if (type === 'column') {
+      if (type === 'row') {
+        cellIds = bonus
+          ? Array.from({ length: GAME_BOARD_SIZE }, (_, i) => i)
+          : cellIds;
+
+        for (let row = id; row > 0; row--) {
+          cellIds.forEach(ind => {
+            state[row][ind].value = state[row - 1][ind].value;
+          });
+        }
+
+        cellIds.forEach(ind => {
+          state[0][ind].value = this.randomValue();
+        });
+      } else {
+        if (bonus) {
           for (let row = 0; row < GAME_BOARD_SIZE; row++) {
             state[row][id].value = this.randomValue();
           }
-        }
-
-        if (type === 'row') {
-          for (let row = id; row > 0; row--) {
-            for (let i = 0; i < GAME_BOARD_SIZE; i++) {
-              state[row][i].value = state[row - 1][i].value;
-            }
-          }
-
-          for (let i = 0; i < GAME_BOARD_SIZE; i++) {
-            state[0][i].value = this.randomValue();
-          }
-        }
-      } else {
-        cellIds.forEach((cellIndex) => {
-          if (type === 'row') {
-            for (let r = cellIndex; r > 0; r--) {
-              state[id][r].value = state[id][r - 1].value;
-            }
-            state[id][0].value = this.randomValue();
-          }
-
-          if (type === 'column') {
+        } else {
+          cellIds.forEach((cellIndex) => {
             for (let r = cellIndex; r > 0; r--) {
               state[r][id].value = state[r - 1][id].value;
             }
             state[0][id].value = this.randomValue();
-          }
-        });
+          });
+        }
       }
     });
 
