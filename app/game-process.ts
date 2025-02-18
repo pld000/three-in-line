@@ -15,7 +15,6 @@ export class GameProcess {
   private score = new Score();
   private statistic = new Statistic();
 
-
   startGame(): void {
     this.statistic.init();
     this.state = this.gameState.getInitialState();

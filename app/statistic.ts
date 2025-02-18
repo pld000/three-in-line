@@ -19,7 +19,7 @@ export class Statistic {
   private mapCombinationToLogInfo({ id, type, bonus, score }: Combination): LogInfo {
     return <LogInfo>{
       move: `Move: ${type} - ${id}`,
-      bonus: bonus ? `Bonus Move!!!'}` : '',
+      bonus: bonus ? `<span style="color: red">Bonus Move!!!</span>` : '',
       score
     };
   }
